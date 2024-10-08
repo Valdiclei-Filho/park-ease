@@ -14,12 +14,12 @@ const CadastroCliente = () => {
     idCarro: "",
   });
 
-  const [planos, setPlanos] = useState([
+  const [planos] = useState([
     { id: 1, nome: "Plano Básico" },
     { id: 2, nome: "Plano Premium" },
   ]); // Esses dados seriam carregados do banco
 
-  const [carros, setCarros] = useState([
+  const [carros] = useState([
     { id: 1, placa: "ABC1234" },
     { id: 2, placa: "XYZ5678" },
   ]); // Esses dados seriam carregados do banco

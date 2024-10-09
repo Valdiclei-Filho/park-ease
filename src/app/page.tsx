@@ -1,4 +1,6 @@
 import {ResponsiveAppBar} from '../components/_ui/Header/index'
+import { sql } from '@vercel/postgres';
+import { NextResponse } from 'next/server';
 
 export default function Home() {
   return (
@@ -9,4 +11,10 @@ export default function Home() {
       </main>
     </div>
   );
+}
+ 
+export async function GET() {
+ 
+  const pets = await sql`SELECT * FROM carros;`;
+  return NextResponse.json({ pets }, { status: 200 });
 }

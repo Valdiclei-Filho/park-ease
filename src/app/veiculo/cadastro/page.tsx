@@ -1,5 +1,5 @@
 "use client";
-
+/*
 import { TextField, Button, MenuItem, FormControl, InputLabel, Select, Box } from "@mui/material";
 import { useState } from "react";
 
@@ -24,14 +24,15 @@ const CadastroCliente = () => {
     { id: 2, placa: "XYZ5678" },
   ]); // Esses dados seriam carregados do banco
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setCliente({
       ...cliente,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
+  // Definindo o tipo do evento como React.FormEvent<HTMLFormElement>
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(cliente);
     // Lógica de envio para o servidor (por exemplo, usando axios para fazer um POST)
@@ -89,7 +90,6 @@ const CadastroCliente = () => {
         required
       />
 
-      {/* Select para Planos */}
       <FormControl fullWidth margin="normal">
         <InputLabel id="select-plano-label">Plano</InputLabel>
         <Select
@@ -107,7 +107,6 @@ const CadastroCliente = () => {
         </Select>
       </FormControl>
 
-      {/* Select para Carros */}
       <FormControl fullWidth margin="normal">
         <InputLabel id="select-carro-label">Carro</InputLabel>
         <Select
@@ -132,4 +131,4 @@ const CadastroCliente = () => {
   );
 };
 
-export default CadastroCliente;
+export default CadastroCliente;*/

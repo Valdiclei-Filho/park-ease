@@ -1,1 +1,1 @@
-export {default as ResponsiveAppBar} from './Header'
+export { default as ResponsiveAppBar } from "./Header";

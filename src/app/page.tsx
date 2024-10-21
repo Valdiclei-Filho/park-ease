@@ -1,7 +1,7 @@
-import Layout from './layout';
-import Content from '../app/veiculo/content';
-import { getCars } from '../app/veiculo/actions';
-
 export default async function Home() {
-  
+  return (
+    <div>
+      <h1>Park Ease</h1>
+    </div>
+  );
 }

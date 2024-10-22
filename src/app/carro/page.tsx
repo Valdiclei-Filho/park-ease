@@ -29,38 +29,40 @@ export default function CarsAll() {
   const [colors, setColors] = useState<Color[]>([]);
   const [models, setModels] = useState<Model[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const carResponse = await fetch(ROUTES_CONST.CARRO, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const [carResponse, colorResponse, modelResponse] = await Promise.all([
+          fetch(ROUTES_CONST.CARRO, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }),
+          fetch(ROUTES_CONST.CORES, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }),
+          fetch(ROUTES_CONST.CARRO_MODELO, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }),
+        ]);
+
+        if (!carResponse.ok || !colorResponse.ok || !modelResponse.ok) {
+          throw new Error("Failed to fetch some data.");
+        }
+
         const carData = await carResponse.json();
-        setCars(carData);
-
-        const colorResponse = await fetch(ROUTES_CONST.CORES, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
         const colorData = await colorResponse.json();
-        setColors(colorData);
-
-        const modelResponse = await fetch(ROUTES_CONST.CARRO_MODELO, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
         const modelData = await modelResponse.json();
+
+        setCars(carData);
+        setColors(colorData);
         setModels(modelData);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
+      } catch (err) {
+        setError("Erro ao buscar os dados. Por favor, tente novamente.");
+        console.error("Error fetching data: ", err);
       } finally {
         setLoading(false);
       }
@@ -69,9 +71,13 @@ export default function CarsAll() {
     fetchData();
   }, []);
 
-  return loading ? (
-    <div>Loading...</div>
-  ) : (
-    <Content cars={cars} colors={colors} models={models} />
-  );
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  return <Content cars={cars} colors={colors} models={models} />;
 }

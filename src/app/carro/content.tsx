@@ -23,25 +23,26 @@ import {
 } from "@mui/x-data-grid";
 import { Select, MenuItem } from "@mui/material";
 
-// Define o tipo Car com todos os campos e seus tipos
 interface Car {
   id: number;
   placa: string;
-  id_cor: number; // Altere para string, se apropriado
-  id_modelo: number; // Altere para string, se apropriado
+  id_cor: number;
+  id_modelo: number;
   data_cadastro: string;
-  cor_nome?: string; // Adicionando para manipulação no grid
-  modelo_nome?: string; // Adicionando para manipulação no grid
+  cor_nome?: string;
+  modelo_nome?: string;
 }
 
 interface ContentProps {
   cars: Car[];
-  colors: { id: number; nome: string }[]; // Adicionando tipos para cores
-  models: { id: number; nome: string }[]; // Adicionando tipos para modelos
+  colors: { id: number; nome: string }[];
+  models: { id: number; nome: string }[];
 }
 
 export default function Content({ cars, colors, models }: ContentProps) {
+
   const [rows, setRows] = React.useState<GridRowsProp>(cars);
+
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {},
   );
@@ -92,7 +93,7 @@ export default function Content({ cars, colors, models }: ContentProps) {
   const columns: GridColDef[] = [
     { field: "placa", headerName: "Placa", width: 150, editable: false },
     {
-      field: "id_cor",
+      field: "cor_nome",
       headerName: "Cor",
       width: 120,
       editable: true,
@@ -105,16 +106,17 @@ export default function Content({ cars, colors, models }: ContentProps) {
             processRowUpdate(updatedRow);
           }}
         >
-          {colors.map((color) => (
+          {(Array.isArray(colors) ? colors : []).map((color) => (
             <MenuItem key={color.id} value={color.id}>
               {color.nome}
             </MenuItem>
           ))}
+
         </Select>
       ),
     },
     {
-      field: "id_modelo",
+      field: "modelo_nome",
       headerName: "Modelo",
       width: 120,
       editable: true,
@@ -127,7 +129,7 @@ export default function Content({ cars, colors, models }: ContentProps) {
             processRowUpdate(updatedRow);
           }}
         >
-          {models.map((model) => (
+          {(Array.isArray(models) ? models : []).map((model) => (
             <MenuItem key={model.id} value={model.id}>
               {model.nome}
             </MenuItem>
@@ -183,7 +185,7 @@ export default function Content({ cars, colors, models }: ContentProps) {
   return (
     <Box sx={{ height: 500, width: "100%" }}>
       <DataGrid
-        rows={rows}
+        rows={rows.rows}
         columns={columns}
         editMode="row"
         rowModesModel={rowModesModel}

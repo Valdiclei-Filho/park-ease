@@ -21,6 +21,7 @@ const pages = [
   { name: "Home", path: AppUtils.HOME_PATH },
   { name: "Planos", path: AppUtils.PLANOS_PATH },
   { name: "Estacionamento", path: AppUtils.CARROS_PATH },
+  { name: "Consulta Cores", path: AppUtils.CORES_PATH },
 ];
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];

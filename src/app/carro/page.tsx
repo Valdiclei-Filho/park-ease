@@ -10,43 +10,24 @@ interface Car {
   id_cor: number;
   id_modelo: number;
   data_cadastro: string;
-  cor_nome?: string;
-  modelo_nome?: string;
-}
-
-interface Color {
-  id: number;
-  nome: string;
-}
-
-interface Model {
-  id: number;
-  nome: string;
+  cor_nome: string;
+  modelo_nome: string;
 }
 
 export default function CarsAll() {
   const [cars, setCars] = useState<Car[]>([]);
-  const [colors, setColors] = useState<Color[]>([]);
-  const [models, setModels] = useState<Model[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [colors, setColors] = useState([]);
+  const [models, setModels] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [carResponse, colorResponse, modelResponse] = await Promise.all([
-          fetch(ROUTES_CONST.CARRO, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          }),
-          fetch(ROUTES_CONST.CORES, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          }),
-          fetch(ROUTES_CONST.CARRO_MODELO, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          }),
+          fetch(ROUTES_CONST.CARRO),
+          fetch(ROUTES_CONST.CORES),
+          fetch(ROUTES_CONST.CARRO_MODELO),
         ]);
 
         if (!carResponse.ok || !colorResponse.ok || !modelResponse.ok) {
@@ -57,12 +38,11 @@ export default function CarsAll() {
         const colorData = await colorResponse.json();
         const modelData = await modelResponse.json();
 
-        setCars(carData);
-        setColors(colorData);
-        setModels(modelData);
+        setCars(carData.rows);
+        setColors(colorData.rows);
+        setModels(modelData.rows);
       } catch (err) {
-        setError("Erro ao buscar os dados. Por favor, tente novamente.");
-        console.error("Error fetching data: ", err);
+        setError("Failed to load data");
       } finally {
         setLoading(false);
       }
@@ -79,5 +59,5 @@ export default function CarsAll() {
     return <div>{error}</div>;
   }
 
-  return <Content cars={cars} colors={colors} models={models} />;
+  return <Content cars={cars} colors={colors} models={models} setCars={setCars} />;
 }

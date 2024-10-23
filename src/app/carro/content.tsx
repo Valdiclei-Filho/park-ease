@@ -1,228 +1,117 @@
-"use client";
-
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
+import React from 'react';
 import {
-  GridRowsProp,
-  GridRowModesModel,
-  GridRowModes,
-  DataGrid,
-  GridColDef,
-  GridToolbarContainer,
-  GridActionsCellItem,
-  GridEventListener,
-  GridRowId,
-  GridRowModel,
-  GridRowEditStopReasons,
-} from "@mui/x-data-grid";
-import { Select, MenuItem } from "@mui/material";
+    Select,
+    MenuItem,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper
+} from '@mui/material';
+import {ROUTES_CONST} from '@/shared';
 
 interface Car {
-  id: number;
-  placa: string;
-  id_cor: number;
-  id_modelo: number;
-  data_cadastro: string;
-  cor_nome?: string;
-  modelo_nome?: string;
+    id: number;
+    placa: string;
+    id_cor: number;
+    id_modelo: number;
+    data_cadastro: string;
+    cor_nome: string;
+    modelo_nome: string;
 }
 
-interface ContentProps {
-  cars: Car[];
-  colors: { id: number; nome: string }[];
-  models: { id: number; nome: string }[];
+interface Color {
+    id: number;
+    nome: string;
 }
 
-export default function Content({ cars, colors, models }: ContentProps) {
+interface Model {
+    id: number;
+    nome: string;
+}
 
-  const [rows, setRows] = React.useState<GridRowsProp>(cars);
+interface Props {
+    cars: Car[];
+    colors: Color[];
+    models: Model[];
+    setCars: React.Dispatch < React.SetStateAction<Car[]> >;
+}
 
-  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
-    {},
-  );
+export default function Content({cars, colors, models, setCars} : Props) {
 
-  const handleRowEditStop: GridEventListener<"rowEditStop"> = (
-    params,
-    event,
-  ) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
-  };
+  const handleCorChange = async (id: number, placa: string, newCorId: number, id_modelo: number) => {
+    try {
+        const response = await fetch(
+            `${ROUTES_CONST.CARRO}?id=${id}&placa=${placa}&id_cor=${newCorId}&id_modelo=${id_modelo}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
 
-  const handleEditClick = (id: GridRowId) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
-
-  const handleSaveClick = (id: GridRowId) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
-
-  const handleDeleteClick = (id: GridRowId) => () => {
-    setRows(rows.filter((row) => row.id !== id));
-  };
-
-  const handleCancelClick = (id: GridRowId) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
-    const editedRow = rows.find((row) => row.id === id);
-    if (editedRow!.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
-  };
-
-  const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = { ...newRow, isNew: false };
-    console.log("Updated Row: ", updatedRow);
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
-  };
-
-  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
-  const columns: GridColDef[] = [
-    { field: "placa", headerName: "Placa", width: 150, editable: false },
-    {
-      field: "cor_nome",
-      headerName: "Cor",
-      width: 120,
-      editable: true,
-      renderEditCell: (params) => (
-        <Select
-          value={params.value}
-          onChange={(e) => {
-            const newValue = e.target.value;
-            const updatedRow = { ...params.row, id_cor: newValue };
-            processRowUpdate(updatedRow);
-          }}
-        >
-          {(Array.isArray(colors) ? colors : []).map((color) => (
-            <MenuItem key={color.id} value={color.id}>
-              {color.nome}
-            </MenuItem>
-          ))}
-
-        </Select>
-      ),
-    },
-    {
-      field: "modelo_nome",
-      headerName: "Modelo",
-      width: 120,
-      editable: true,
-      renderEditCell: (params) => (
-        <Select
-          value={params.value}
-          onChange={(e) => {
-            const newValue = e.target.value;
-            const updatedRow = { ...params.row, id_modelo: newValue };
-            processRowUpdate(updatedRow);
-          }}
-        >
-          {(Array.isArray(models) ? models : []).map((model) => (
-            <MenuItem key={model.id} value={model.id}>
-              {model.nome}
-            </MenuItem>
-          ))}
-        </Select>
-      ),
-    },
-    {
-      field: "data_cadastro",
-      headerName: "Data de Cadastro",
-      width: 180,
-      editable: false,
-    },
-    {
-      field: "actions",
-      type: "actions",
-      headerName: "Actions",
-      width: 100,
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              onClick={handleCancelClick(id)}
-            />,
-          ];
+        if (!response.ok) {
+            throw new Error('Erro ao atualizar carro');
         }
 
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            onClick={handleEditClick(id)}
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-          />,
-        ];
-      },
-    },
-  ];
+        const updatedCars = cars.map((car) =>
+            car.id === id
+                ? {
+                      ...car,
+                      id_cor: newCorId,
+                      cor_nome: colors.find((cor) => cor.id === newCorId)?.nome || '',
+                  }
+                : car
+        );
 
-  return (
-    <Box sx={{ height: 500, width: "100%" }}>
-      <DataGrid
-        rows={rows.rows}
-        columns={columns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        slots={{
-          toolbar: () => (
-            <GridToolbarContainer>
-              <Button
-                color="primary"
-                startIcon={<AddIcon />}
-                onClick={() => {
-                  const id = Math.floor(Math.random() * 1000);
-                  setRows((oldRows) => [
-                    ...oldRows,
+        setCars(updatedCars);
+        return await response.json();
+    } catch (error) {
+        console.error('Erro ao atualizar a cor:', error);
+    }
+};
+
+    return (
+        <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Placa</TableCell>
+                        <TableCell>Cor</TableCell>
+                        <TableCell>Modelo</TableCell>
+                        <TableCell>Data de Cadastro</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                     {
-                      id,
-                      placa: "",
-                      id_cor: "",
-                      id_modelo: "",
-                      data_cadastro: "",
-                      isNew: true,
-                    },
-                  ]);
-                  setRowModesModel((oldModel) => ({
-                    ...oldModel,
-                    [id]: { mode: GridRowModes.Edit },
-                  }));
-                }}
-              >
-                Add record
-              </Button>
-            </GridToolbarContainer>
-          ),
-        }}
-      />
-    </Box>
-  );
+                        cars.map((row) => (
+                            <TableRow key={row.id}>
+                                <TableCell>{row.placa}</TableCell>
+                                <TableCell>
+                                    <Select
+                                        value={row.id_cor}
+                                        onChange={(e) => handleCorChange(row.id, row.placa, Number(e.target.value), row.id_modelo)}>
+                                        {
+                                            colors.map((cor) => (
+                                                <MenuItem key={cor.id} value={cor.id}>
+                                                    {cor.nome}
+                                                </MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                </TableCell>
+                                <TableCell>
+                                    {row.modelo_nome}
+                                </TableCell>
+                                <TableCell>{row.data_cadastro}</TableCell>
+                            </TableRow>
+                        ))
+                    }
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
 }

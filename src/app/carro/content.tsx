@@ -36,7 +36,7 @@ interface Props {
     cars: Car[];
     colors: Color[];
     models: Model[];
-    setCars: React.Dispatch < React.SetStateAction<Car[]> >;
+    setCars: React.Dispatch <React.SetStateAction<Car[]> >;
 }
 
 export default function Content({cars, colors, models, setCars} : Props) {

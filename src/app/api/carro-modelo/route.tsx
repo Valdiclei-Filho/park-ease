@@ -33,11 +33,9 @@ export async function POST(request: Request): Promise<NextResponse> {
 
 export async function PUT(request: Request): Promise<NextResponse> {
   try {
-    const { id, nome } = await request.json();
-
-    if (!id || !nome) {
-      return ApiHandler.ResponseToJson({ error: "Código e nome são obrigatórios" }, 400);
-    }
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    const nome = searchParams.get('placa');
 
     const { rowCount } = await sql`
       UPDATE carros_modelos

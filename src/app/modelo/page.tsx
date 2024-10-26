@@ -17,7 +17,7 @@ export default async function CarsAll() {
     },
   ];
 
-  const response = await fetch(ROUTES_CONST.CORES);
+  const response = await fetch(ROUTES_CONST.CARRO_MODELO);
   const responseJson = await response.json();
   const rows = responseJson.rows;
 

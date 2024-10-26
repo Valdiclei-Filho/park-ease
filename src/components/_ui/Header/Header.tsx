@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link"; // Importar Link do Next.js
+import Link from "next/link";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -22,6 +22,7 @@ const pages = [
   { name: "Planos", path: AppUtils.PLANOS_PATH },
   { name: "Estacionamento", path: AppUtils.CARROS_PATH },
   { name: "Consulta Cores", path: AppUtils.CORES_PATH },
+  { name: "Consulta Modelos", path: AppUtils.CARROS_MODELOS_PATH },
 ];
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];

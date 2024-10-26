@@ -15,13 +15,14 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.2",
     "@mui/material": "^6.1.2",
+    "@mui/x-charts": "^7.21.0",
     "@mui/x-data-grid": "^7.20.0",
     "@vercel/postgres": "^0.10.0",
     "next": "14.2.14",
     "react": "^18",
     "react-dom": "^18",
     "react-router-dom": "^6.26.2",
-    "vercel": "^37.6.3"
+    "vercel": "^32.3.0"
   },
   "devDependencies": {
     "@types/node": "^20",

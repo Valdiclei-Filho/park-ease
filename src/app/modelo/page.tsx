@@ -1,56 +1,61 @@
 "use client";
+import Color from './content'
+import React, { useEffect, useState } from "react";
 import { ROUTES_CONST } from "@/shared/route.const";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
-import { PieChart } from '@mui/x-charts/PieChart';
 
-export default async function CarsAll() {
-  const columns: GridColDef<(typeof rows)[number]>[] = [
-    { field: 'id', headerName: 'Código', editable: false, align: 'left', filterable: true },
-    {
-      field: 'nome',
-      headerName: 'Nome',
-      editable: false,
-      align: 'center',
-      filterable: true,
-      sortable: true,
-    },
-  ];
+interface Model {
+  id: number;
+  nome: string;
+}
 
-  const response = await fetch(ROUTES_CONST.CARRO_MODELO);
-  const responseJson = await response.json();
-  const rows = responseJson.rows;
+interface ModelsGrafico{
+  modelo: string;
+  quantidade: number;
+}
 
-  return (
-    <div>
+export default function ColorsAll() {
+  const [models, setModels] = useState<Model[]>([]);
+  const [modelsGrafico, setModelsGrafico] = useState<ModelsGrafico[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-      <Box sx={{ height: 400, width: '100%', }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
-          }}
-          pageSizeOptions={[5]}
-        />
-      </Box>
-      <PieChart
-        series={[
-          {
-            data: [
-              { id: 0, value: 10, label: 'series A' },
-              { id: 1, value: 15, label: 'series B' },
-              { id: 2, value: 20, label: 'series C' },
-            ],
-          },
-        ]}
-        width={400}
-        height={200}
-      />
-    </div>
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [modelsResponse] = await Promise.all([
+          fetch(ROUTES_CONST.CARRO_MODELO),
+        ]);
+
+        const [modelsGraficoResponse] = await Promise.all([
+          fetch(`${ROUTES_CONST.CARRO_MODELO}/grafico`)
+        ])
+
+        if (!modelsResponse.ok) {
+          throw new Error("Failed to fetch some data.");
+        }
+
+        const colorData = await modelsResponse.json();
+        const colorGraficoData = await modelsGraficoResponse.json();
+
+        setModels(colorData.rows);
+        setModelsGrafico(colorGraficoData.rows);
+      } catch (err) {
+        setError("Failed to load data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  return <Color models={models} modelsGrafico={modelsGrafico} setModels={setModels} setModelsGrafico={setModelsGrafico}/>;
 }

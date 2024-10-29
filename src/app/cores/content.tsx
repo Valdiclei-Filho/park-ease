@@ -1,44 +1,73 @@
 "use client";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Box } from "@mui/material";
+import { PieChart } from '@mui/x-charts/PieChart';
 
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
-import {
-  GridRowsProp,
-  GridRowModesModel,
-  GridRowModes,
-  DataGrid,
-  GridColDef,
-  GridToolbarContainer,
-  GridActionsCellItem,
-  GridEventListener,
-  GridRowId,
-  GridRowModel,
-  GridRowEditStopReasons,
-} from "@mui/x-data-grid";
-import { Select, MenuItem } from "@mui/material";
-
-interface Car {
+interface Color {
   id: number;
-  placa: string;
-  id_cor: number;
-  id_modelo: number;
-  data_cadastro: string;
-  cor_nome?: string;
-  modelo_nome?: string;
+  nome: string
 }
 
-interface ContentProps {
-  cars: Car[];
-  colors: { id: number; nome: string }[];
-  models: { id: number; nome: string }[];
+interface ColorsGrafico {
+  cor: string;
+  quantidade: number
 }
 
-export default function Content({ cars, colors, models }: ContentProps) {
+interface Props {
+  colors: Color[];
+  colorsGrafico: ColorsGrafico[];
+  setColors: React.Dispatch<React.SetStateAction<Color[]>>;
+  setColorsGrafico: React.Dispatch<React.SetStateAction<ColorsGrafico[]>>;
+}
 
+export default function Colors({ colors, colorsGrafico, setColors, setColorsGrafico }: Props) {
+  console.log(colors)
+  const columns: GridColDef<(typeof colors)[number]>[] = [
+    { field: 'id', headerName: 'Código', editable: false, align: 'left', filterable: true },
+    {
+      field: 'nome',
+      headerName: 'Nome',
+      editable: false,
+      align: 'center',
+      filterable: true,
+      sortable: true,
+    },
+  ];
+
+  return (
+    <div>
+
+      <Box sx={{ height: 400, width: '100%', }}>
+        <DataGrid
+          rows={colors}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+          }}
+          pageSizeOptions={[5]}
+        />
+      </Box>
+      <PieChart
+        series={[
+          {
+            data: colorsGrafico.map((item) => ({
+              id: item.cor,
+              value: item.quantidade,
+              label: item.cor
+            })),
+            highlightScope: { fade: 'global', highlight: 'item' },
+            faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+          },
+        ]}
+        height={600}
+        width={500}
+        margin={{ right: 200 }}
+      />
+
+    </div>
+  );
 }

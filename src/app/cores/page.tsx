@@ -1,6 +1,6 @@
 "use client";
 import Color from './content'
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ROUTES_CONST } from "@/shared/route.const";
 
 interface Color {
@@ -8,12 +8,13 @@ interface Color {
   nome: string;
 }
 
-interface ColorsGrafico{
+interface ColorsGrafico {
   cor: string;
   quantidade: number;
 }
 
 export default function ColorsAll() {
+  const hasFetched = useRef(false);
   const [colors, setColors] = useState<Color[]>([]);
   const [colorsGrafico, setColorsGrafico] = useState<ColorsGrafico[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -21,14 +22,15 @@ export default function ColorsAll() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const [colorsResponse] = await Promise.all([
-          fetch(ROUTES_CONST.CORES),
-        ]);
+      if (hasFetched.current) return;
+      hasFetched.current = true;
 
-        const [colorsGraficoResponse] = await Promise.all([
-          fetch(`${ROUTES_CONST.CORES}/grafico`)
-        ])
+      try {
+        const [colorsResponse] = await Promise.all([fetch(ROUTES_CONST.CORES)]);
+
+        const [colorsGraficoResponse] = await Promise.all(
+          [fetch(`${ROUTES_CONST.CORES}/grafico`)]
+        )
 
         if (!colorsResponse.ok) {
           throw new Error("Failed to fetch some data.");
@@ -57,5 +59,9 @@ export default function ColorsAll() {
     return <div>{error}</div>;
   }
 
-  return <Color colors={colors} colorsGrafico={colorsGrafico} setColors={setColors} setColorsGrafico={setColorsGrafico}/>;
+  return <Color
+    colors={colors}
+    colorsGrafico={colorsGrafico}
+    setColors={setColors}
+    setColorsGrafico={setColorsGrafico} />;
 }

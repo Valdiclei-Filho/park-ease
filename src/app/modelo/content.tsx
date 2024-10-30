@@ -20,53 +20,80 @@ interface Props {
   setModelsGrafico: React.Dispatch<React.SetStateAction<ModelsGrafico[]>>;
 }
 
-export default function Colors({ models, modelsGrafico, setModels, setModelsGrafico }: Props) {
-  console.log(models)
+export default function Colors(
+  { models, modelsGrafico, setModels, setModelsGrafico }: Props
+) {
   const columns: GridColDef<(typeof models)[number]>[] = [
-    { field: 'id', headerName: 'Código', editable: false, align: 'left', filterable: true },
     {
+      field: 'id',
+      headerName: 'Código',
+      editable: false,
+      align: 'center',
+      filterable: true,
+      headerAlign: 'center',
+      flex: 1
+    }, {
       field: 'nome',
-      headerName: 'Nome',
+      headerName: 'Modelo',
       editable: false,
       align: 'center',
       filterable: true,
       sortable: true,
-    },
+      headerAlign: 'center',
+      flex: 1
+    }
   ];
 
   return (
-    <div>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        justifyItems: 'center'
+      }}>
 
-      <Box sx={{ height: 400, width: '100%', }}>
+      <Box
+        sx={{
+          height: 350,
+          width: '50%',
+          margin: 10,
+          marginRight: 0
+        }}>
         <DataGrid
           rows={models}
           columns={columns}
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 5,
-              },
-            },
+                pageSize: 5
+              }
+            }
           }}
-          pageSizeOptions={[5]}
-        />
+          pageSizeOptions={[5]} />
       </Box>
       <PieChart
-        series={[
-          {
-            data: modelsGrafico.map((item) => ({
-              id: item.modelo,
-              value: item.quantidade,
-              label: item.modelo
-            })),
-            highlightScope: { fade: 'global', highlight: 'item' },
-            faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+        series={[{
+          data: modelsGrafico.map(
+            (item) => ({ id: item.modelo, value: item.quantidade, label: item.modelo })
+          ),
+          highlightScope: {
+            fade: 'global',
+            highlight: 'item'
           },
+          faded: {
+            innerRadius: 30,
+            additionalRadius: -30,
+            color: 'gray'
+          }
+        }
         ]}
-        height={600}
-        width={500}
-        margin={{ right: 200 }}
-      />
+        height={400}
+        width={600}
+        margin={{
+          right: 150
+        }} />
 
     </div>
   );

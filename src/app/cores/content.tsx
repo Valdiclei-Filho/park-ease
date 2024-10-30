@@ -20,54 +20,81 @@ interface Props {
   setColorsGrafico: React.Dispatch<React.SetStateAction<ColorsGrafico[]>>;
 }
 
-export default function Colors({ colors, colorsGrafico, setColors, setColorsGrafico }: Props) {
+export default function Colors(
+  { colors, colorsGrafico, setColors, setColorsGrafico }: Props
+) {
   console.log(colors)
   const columns: GridColDef<(typeof colors)[number]>[] = [
-    { field: 'id', headerName: 'Código', editable: false, align: 'left', filterable: true },
     {
+      field: 'id',
+      headerName: 'Código',
+      headerAlign: 'center',
+      editable: false,
+      align: 'center',
+      filterable: true,
+      flex: 1
+    }, {
       field: 'nome',
-      headerName: 'Nome',
+      headerName: 'Cor',
+      headerAlign: 'center',
       editable: false,
       align: 'center',
       filterable: true,
       sortable: true,
-    },
+      flex: 1
+    }
   ];
 
   return (
-    <div>
-
-      <Box sx={{ height: 400, width: '100%', }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        justifyItems: 'center'
+      }}>
+      <Box
+        sx={{
+          height: 350,
+          width: '50%',
+          margin: 10,
+          marginRight: 0
+        }}>
         <DataGrid
           rows={colors}
           columns={columns}
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 5,
-              },
-            },
+                pageSize: 5
+              }
+            }
           }}
-          pageSizeOptions={[5]}
-        />
+          pageSizeOptions={[5]} />
       </Box>
       <PieChart
-        series={[
-          {
-            data: colorsGrafico.map((item) => ({
-              id: item.cor,
-              value: item.quantidade,
-              label: item.cor
-            })),
-            highlightScope: { fade: 'global', highlight: 'item' },
-            faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+        series={[{
+          data: colorsGrafico.map(
+            (item) => ({ id: item.cor, value: item.quantidade, label: item.cor })
+          ),
+          highlightScope: {
+            fade: 'global',
+            highlight: 'item'
           },
+          faded: {
+            innerRadius: 30,
+            additionalRadius: -30,
+            color: 'gray'
+          }
+        }
         ]}
-        height={600}
-        width={500}
-        margin={{ right: 200 }}
-      />
-
+        height={400}
+        width={600}
+        margin={{
+          right: 100
+        }} />
     </div>
+
   );
 }

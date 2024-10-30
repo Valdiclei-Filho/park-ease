@@ -4,7 +4,6 @@ import { ApiHandler } from "@/shared/";
 
 export async function GET(): Promise<NextResponse> {
   try {
-    console.log('adawdawd')
     const { rows } = await sql`
       SELECT * FROM planos`;
     return ApiHandler.ResponseToJson(rows, 200);

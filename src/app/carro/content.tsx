@@ -1,16 +1,7 @@
 import React from 'react';
-import {
-    Select,
-    MenuItem,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper
-} from '@mui/material';
-import {ROUTES_CONST} from '@/shared';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Select, MenuItem } from '@mui/material';
+import { ROUTES_CONST } from '@/shared';
 
 interface Car {
     id: number;
@@ -36,82 +27,80 @@ interface Props {
     cars: Car[];
     colors: Color[];
     models: Model[];
-    setCars: React.Dispatch <React.SetStateAction<Car[]> >;
+    setCars: React.Dispatch<React.SetStateAction<Car[]>>;
 }
 
-export default function Content({cars, colors, models, setCars} : Props) {
+export default function Content({ cars, colors, models, setCars }: Props) {
+    const handleCorChange = async (id: number, placa: string, newCorId: number, id_modelo: number) => {
+        try {
+            const response = await fetch(
+                `${ROUTES_CONST.CARRO}?id=${id}&placa=${placa}&id_cor=${newCorId}&id_modelo=${id_modelo}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
 
-  const handleCorChange = async (id: number, placa: string, newCorId: number, id_modelo: number) => {
-    try {
-        const response = await fetch(
-            `${ROUTES_CONST.CARRO}?id=${id}&placa=${placa}&id_cor=${newCorId}&id_modelo=${id_modelo}`,
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+            if (!response.ok) {
+                throw new Error('Erro ao atualizar carro');
             }
-        );
 
-        if (!response.ok) {
-            throw new Error('Erro ao atualizar carro');
+            const updatedCars = cars.map((car) =>
+                car.id === id
+                    ? {
+                          ...car,
+                          id_cor: newCorId,
+                          cor_nome: colors.find((cor) => cor.id === newCorId)?.nome || '',
+                      }
+                    : car
+            );
+
+            setCars(updatedCars);
+            return await response.json();
+        } catch (error) {
+            console.error('Erro ao atualizar a cor:', error);
         }
+    };
 
-        const updatedCars = cars.map((car) =>
-            car.id === id
-                ? {
-                      ...car,
-                      id_cor: newCorId,
-                      cor_nome: colors.find((cor) => cor.id === newCorId)?.nome || '',
-                  }
-                : car
-        );
-
-        setCars(updatedCars);
-        return await response.json();
-    } catch (error) {
-        console.error('Erro ao atualizar a cor:', error);
-    }
-};
+    const columns: GridColDef[] = [
+        { field: 'placa', headerName: 'Placa', flex: 1, headerAlign: 'center', align: 'center' },
+        {
+            field: 'cor_nome',
+            headerName: 'Cor',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: (params) => (
+                <Select
+                    value={params.row.id_cor}
+                    onChange={(e) => handleCorChange(params.row.id, params.row.placa, Number(e.target.value), params.row.id_modelo)}
+                    style={{ width: '100%' }}
+                >
+                    {colors.map((cor) => (
+                        <MenuItem key={cor.id} value={cor.id}>
+                            {cor.nome}
+                        </MenuItem>
+                    ))}
+                </Select>
+            ),
+        },
+        { field: 'modelo_nome', headerName: 'Modelo', flex: 1, headerAlign: 'center', align: 'center' },
+        { field: 'data_cadastro', headerName: 'Data de Cadastro', flex: 1, headerAlign: 'center', align: 'center' },
+    ];
 
     return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Placa</TableCell>
-                        <TableCell>Cor</TableCell>
-                        <TableCell>Modelo</TableCell>
-                        <TableCell>Data de Cadastro</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        cars.map((row) => (
-                            <TableRow key={row.id}>
-                                <TableCell>{row.placa}</TableCell>
-                                <TableCell>
-                                    <Select
-                                        value={row.id_cor}
-                                        onChange={(e) => handleCorChange(row.id, row.placa, Number(e.target.value), row.id_modelo)}>
-                                        {
-                                            colors.map((cor) => (
-                                                <MenuItem key={cor.id} value={cor.id}>
-                                                    {cor.nome}
-                                                </MenuItem>
-                                            ))
-                                        }
-                                    </Select>
-                                </TableCell>
-                                <TableCell>
-                                    {row.modelo_nome}
-                                </TableCell>
-                                <TableCell>{row.data_cadastro}</TableCell>
-                            </TableRow>
-                        ))
-                    }
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <div style={{ height: 600, width: '100%' }}>
+            <DataGrid
+                rows={cars}
+                columns={columns}
+                pageSize={10}
+                rowsPerPageOptions={[10, 20, 50]}
+                pagination
+                disableSelectionOnClick
+                filterMode="client"
+            />
+        </div>
     );
 }

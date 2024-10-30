@@ -4,5 +4,5 @@ export class ROUTES_CONST {
   public static CARRO = `${AppUtils.API_URL}/carro`;
   public static CARRO_MODELO = `${AppUtils.API_URL}/modelo`;
   public static CORES = `${AppUtils.API_URL}/cores`;
-  public static PLANOS = `${AppUtils.API_URL}/planos`;
+  public static PLANOS = `${AppUtils.API_URL}/plano`;
 }

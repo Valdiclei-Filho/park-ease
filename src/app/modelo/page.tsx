@@ -1,6 +1,6 @@
 "use client";
 import Color from './content'
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ROUTES_CONST } from "@/shared/route.const";
 
 interface Model {
@@ -8,12 +8,13 @@ interface Model {
   nome: string;
 }
 
-interface ModelsGrafico{
+interface ModelsGrafico {
   modelo: string;
   quantidade: number;
 }
 
 export default function ColorsAll() {
+  const hasFetched = useRef(false);
   const [models, setModels] = useState<Model[]>([]);
   const [modelsGrafico, setModelsGrafico] = useState<ModelsGrafico[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -21,17 +22,17 @@ export default function ColorsAll() {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (hasFetched.current) return;
+      hasFetched.current = true;
+
       try {
-        const [modelsResponse] = await Promise.all([
+        const [modelsResponse, modelsGraficoResponse] = await Promise.all([
           fetch(ROUTES_CONST.CARRO_MODELO),
+          fetch(`${ROUTES_CONST.CARRO_MODELO}/grafico`)
         ]);
 
-        const [modelsGraficoResponse] = await Promise.all([
-          fetch(`${ROUTES_CONST.CARRO_MODELO}/grafico`)
-        ])
-
-        if (!modelsResponse.ok) {
-          throw new Error("Failed to fetch some data.");
+        if (!modelsResponse.ok || !modelsGraficoResponse.ok) {
+          throw new Error("Failed to fetch data.");
         }
 
         const colorData = await modelsResponse.json();
@@ -57,5 +58,9 @@ export default function ColorsAll() {
     return <div>{error}</div>;
   }
 
-  return <Color models={models} modelsGrafico={modelsGrafico} setModels={setModels} setModelsGrafico={setModelsGrafico}/>;
+  return <Color
+    models={models}
+    modelsGrafico={modelsGrafico}
+    setModels={setModels}
+    setModelsGrafico={setModelsGrafico} />;
 }

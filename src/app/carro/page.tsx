@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Content from "./content";
 import { ROUTES_CONST } from "@/shared/route.const";
 
@@ -15,6 +15,7 @@ interface Car {
 }
 
 export default function CarsAll() {
+  const hasFetched = useRef(false);
   const [cars, setCars] = useState<Car[]>([]);
   const [colors, setColors] = useState([]);
   const [models, setModels] = useState([]);
@@ -23,6 +24,9 @@ export default function CarsAll() {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (hasFetched.current) return;
+      hasFetched.current = true;
+
       try {
         const [carResponse, colorResponse, modelResponse] = await Promise.all([
           fetch(ROUTES_CONST.CARRO),

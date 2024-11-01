@@ -1,7 +1,7 @@
 "use client";
 
 import Planos from './content'
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ROUTES_CONST } from "@/shared/route.const";
 
 interface Plan {
@@ -14,12 +14,16 @@ interface Plan {
 }
 
 export default function PlansAll() {
+  const hasFetched = useRef(false);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (hasFetched.current) return;
+      hasFetched.current = true;
+      
       try {
         const [planResponse] = await Promise.all([
           fetch(ROUTES_CONST.PLANOS),

@@ -6,16 +6,15 @@ export const Footer = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#1976d2",
-        color: "white",
+        backgroundColor: "#021526", // Usando o tom mais escuro
+        color: "#FFFFFF", // Texto branco
         padding: "16px",
         textAlign: "center",
-        position: "relative", // Mudança para relative
+        position: "relative", // Mantido como relative
       }}
     >
       <Typography variant="body2">
-        &copy; {new Date().getFullYear()} Seu Nome. Todos os direitos
-        reservados.
+        &copy; {new Date().getFullYear()} Seu Nome. Todos os direitos reservados.
       </Typography>
       <Typography variant="body2">
         <Link href="#" color="inherit">

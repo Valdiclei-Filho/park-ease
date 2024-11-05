@@ -3,6 +3,9 @@
 import Planos from './content'
 import React, { useEffect, useRef, useState } from "react";
 import { ROUTES_CONST } from "@/shared/route.const";
+import {Loading} from "../../components/_ui/Button/index";
+import { Toast } from "../../components/_ui/Toast/index";
+import { SnackbarCloseReason } from '@mui/material/Snackbar';
 
 interface Plan {
   id: number;
@@ -18,6 +21,9 @@ export default function PlansAll() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [severity, setSeverity] = useState<'success' | 'error'>('error');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,24 +42,41 @@ export default function PlansAll() {
         const planData = await planResponse.json();
 
         setPlans(planData.rows);
-        console.log(planData)
+        setSuccessMessage("Dados carregados com sucesso!");
+        setSeverity('success');
       } catch (err) {
-        setError("Failed to load data");
+        setError("Falha ao carregar os dados");
+        setSeverity('error');
       } finally {
         setLoading(false);
+        setSnackbarOpen(true);
       }
     };
 
     fetchData();
   }, []);
 
+  const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason: SnackbarCloseReason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
   if (loading) {
-    return <div>Carregando...</div>;
+    return <Loading color="#021526" size={88} />; 
   }
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  return <Planos plans={plans} setPlans={setPlans}/>;
+  return( 
+    <>      
+      <Planos plans={plans} setPlans={setPlans}/>
+      
+      <Toast
+        open={snackbarOpen}
+        onClose={handleCloseSnackbar}
+        message={error ? error : successMessage || ""}
+        severity={severity}
+      />
+    </>
+  );
 }

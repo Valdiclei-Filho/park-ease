@@ -48,15 +48,17 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#021526' }}> {/* Azul escuro */}
+    <AppBar position="static" sx={{ backgroundColor: '#021526' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <CarRentalIcon sx={{ display: { xs: "none", md: "flex" }, fontSize: 60, color: '#FFFFFF' }} /> {/* Texto em branco */}
+        <Link href={AppUtils.HOME_PATH} style={{ display: "flex", alignItems: "center", textDecoration: "none", color: "#FFFFFF" }}>
+          <img src="/img/icon-96.png" alt="" width="60" height="60" style={{ marginRight: '8px' }} />
+        </Link>
           <Typography
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href={AppUtils.HOME_PATH}
             sx={{
               display: { xs: "none", md: "flex" },
               fontFamily: "monospace",
@@ -65,10 +67,9 @@ function ResponsiveAppBar() {
               color: "#FFFFFF",
               textDecoration: "none",
             }}
-          >
+            >
             ParkEase
           </Typography>
-
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -101,7 +102,7 @@ function ResponsiveAppBar() {
                   <Typography sx={{ textAlign: "center", color: "#FFFFFF" }}>
                     <Link
                       href={page.path}
-                      style={{ textDecoration: "none", color: "#FFFFFF" }} // Garantindo que o link também seja branco
+                      style={{ textDecoration: "none", color: "#FFFFFF" }} 
                     >
                       {page.name}
                     </Link>
@@ -143,11 +144,11 @@ function ResponsiveAppBar() {
               <Button
                 key={page.name}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "#FFFFFF", display: "block" }} // Mudando a cor do texto do botão para branco
+                sx={{ my: 2, color: "#FFFFFF", display: "block" }} 
               >
                 <Link
                   href={page.path}
-                  style={{ textDecoration: "none", color: "inherit" }} // Mantendo a herança da cor
+                  style={{ textDecoration: "none", color: "inherit" }} 
                 >
                   {page.name}
                 </Link>
@@ -178,7 +179,7 @@ function ResponsiveAppBar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center" color="#FFFFFF">{setting}</Typography> {/* Texto do menu de configurações em branco */}
+                  <Typography textAlign="center" color="#FFFFFF">{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>

@@ -20,7 +20,7 @@ interface Props {
   setModelsGrafico: React.Dispatch<React.SetStateAction<ModelsGrafico[]>>;
 }
 
-export default function Colors(
+export default function Model(
   { models, modelsGrafico, setModels, setModelsGrafico }: Props
 ) {
   const columns: GridColDef<(typeof models)[number]>[] = [

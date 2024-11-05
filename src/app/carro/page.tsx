@@ -3,6 +3,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import Content from "./content";
 import { ROUTES_CONST } from "@/shared/route.const";
+import { Loading } from "../../components/_ui/Button/index";
+import { Toast } from "../../components/_ui/Toast/index";
+import { SnackbarCloseReason } from '@mui/material/Snackbar';
 
 interface Car {
   id: number;
@@ -21,6 +24,9 @@ export default function CarsAll() {
   const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [severity, setSeverity] = useState<'success' | 'error'>('error');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +41,7 @@ export default function CarsAll() {
         ]);
 
         if (!carResponse.ok || !colorResponse.ok || !modelResponse.ok) {
-          throw new Error("Failed to fetch some data.");
+          throw new Error("Falha ao buscar alguns dados");
         }
 
         const carData = await carResponse.json();
@@ -45,23 +51,43 @@ export default function CarsAll() {
         setCars(carData.rows);
         setColors(colorData.rows);
         setModels(modelData.rows);
+        setSuccessMessage("Dados carregados com sucesso!");
+        setSeverity('success');
       } catch (err) {
-        setError("Failed to load data");
+        setError("Falha ao carregar os dados");
+        setSeverity('error');
       } finally {
         setLoading(false);
+        setSnackbarOpen(true);
       }
     };
 
     fetchData();
   }, []);
 
+  const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason: SnackbarCloseReason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
   if (loading) {
-    return <div>Carregando...</div>;
+    return (
+      <Loading color="#021526" size={88} />
+    );
   }
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  return <Content cars={cars} colors={colors} models={models} setCars={setCars} />;
+  return (
+    <>
+      <Content cars={cars} colors={colors} models={models} setCars={setCars} />
+      
+      <Toast
+        open={snackbarOpen}
+        onClose={handleCloseSnackbar}
+        message={error ? error : successMessage || ""}
+        severity={severity}
+      />
+    </>
+  );
 }

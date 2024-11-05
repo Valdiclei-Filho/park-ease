@@ -1,7 +1,11 @@
 "use client";
-import Color from './content'
+
+import Model from './content'
 import React, { useEffect, useRef, useState } from "react";
 import { ROUTES_CONST } from "@/shared/route.const";
+import {Loading} from "../../components/_ui/Button/index";
+import { Toast } from "../../components/_ui/Toast/index";
+import { SnackbarCloseReason } from '@mui/material/Snackbar';
 
 interface Model {
   id: number;
@@ -13,12 +17,15 @@ interface ModelsGrafico {
   quantidade: number;
 }
 
-export default function ColorsAll() {
+export default function ModelsAll() {
   const hasFetched = useRef(false);
   const [models, setModels] = useState<Model[]>([]);
   const [modelsGrafico, setModelsGrafico] = useState<ModelsGrafico[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [severity, setSeverity] = useState<'success' | 'error'>('error');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,27 +47,45 @@ export default function ColorsAll() {
 
         setModels(colorData.rows);
         setModelsGrafico(colorGraficoData.rows);
+        setSuccessMessage("Dados carregados com sucesso!");
+        setSeverity('success');
       } catch (err) {
-        setError("Failed to load data");
+        setError("Falha ao carregar os dados");
+        setSeverity('error');
       } finally {
         setLoading(false);
+        setSnackbarOpen(true);
       }
     };
 
     fetchData();
   }, []);
 
+  const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason: SnackbarCloseReason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
   if (loading) {
-    return <div>Carregando...</div>;
+    return <Loading color="#021526" size={88} />; 
   }
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  return (
+    <>      
+      <Model
+        models={models}
+        modelsGrafico={modelsGrafico}
+        setModels={setModels}
+        setModelsGrafico={setModelsGrafico} />;
 
-  return <Color
-    models={models}
-    modelsGrafico={modelsGrafico}
-    setModels={setModels}
-    setModelsGrafico={setModelsGrafico} />;
+      <Toast
+        open={snackbarOpen}
+        onClose={handleCloseSnackbar}
+        message={error ? error : successMessage || ""}
+        severity={severity}
+      />
+    </>
+  );  
 }

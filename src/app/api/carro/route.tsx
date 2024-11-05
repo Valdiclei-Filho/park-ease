@@ -30,16 +30,6 @@ export async function POST(
   }
 }
 
-export async function DELETE(id: number): Promise<NextResponse> {
-  try {
-    const { rows } = await sql`DELETE FROM carros
-      WHERE id = ${id}`;
-    return ApiHandler.ResponseToJson(rows, 200);
-  } catch (error) {
-    return ApiHandler.ResponseToJson(error, 500);
-  }
-}
-
 export async function PUT(request: Request): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url);

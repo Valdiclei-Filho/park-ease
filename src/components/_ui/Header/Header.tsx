@@ -14,7 +14,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import CarRentalIcon from '@mui/icons-material/CarRental';
 import { AppUtils } from "@/shared";
 
 const pages = [
@@ -28,8 +27,12 @@ const pages = [
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+    null,
+  );
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null,
+  );
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -48,12 +51,26 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#021526' }}>
+    <AppBar position="static" sx={{ backgroundColor: "#021526" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-        <Link href={AppUtils.HOME_PATH} style={{ display: "flex", alignItems: "center", textDecoration: "none", color: "#FFFFFF" }}>
-          <img src="/img/icon-96.png" alt="" width="60" height="60" style={{ marginRight: '8px' }} />
-        </Link>
+          <Link
+            href={AppUtils.HOME_PATH}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+              color: "#FFFFFF",
+            }}
+          >
+            <img
+              src="/img/icon-96.png"
+              alt=""
+              width="60"
+              height="60"
+              style={{ marginRight: "8px" }}
+            />
+          </Link>
           <Typography
             variant="h6"
             noWrap
@@ -67,7 +84,7 @@ function ResponsiveAppBar() {
               color: "#FFFFFF",
               textDecoration: "none",
             }}
-            >
+          >
             ParkEase
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -102,7 +119,7 @@ function ResponsiveAppBar() {
                   <Typography sx={{ textAlign: "center", color: "#FFFFFF" }}>
                     <Link
                       href={page.path}
-                      style={{ textDecoration: "none", color: "#FFFFFF" }} 
+                      style={{ textDecoration: "none", color: "#FFFFFF" }}
                     >
                       {page.name}
                     </Link>
@@ -144,11 +161,11 @@ function ResponsiveAppBar() {
               <Button
                 key={page.name}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "#FFFFFF", display: "block" }} 
+                sx={{ my: 2, color: "#FFFFFF", display: "block" }}
               >
                 <Link
                   href={page.path}
-                  style={{ textDecoration: "none", color: "inherit" }} 
+                  style={{ textDecoration: "none", color: "inherit" }}
                 >
                   {page.name}
                 </Link>
@@ -179,7 +196,9 @@ function ResponsiveAppBar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center" color="#FFFFFF">{setting}</Typography>
+                  <Typography textAlign="center" color="#FFFFFF">
+                    {setting}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>

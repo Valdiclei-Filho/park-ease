@@ -38,16 +38,15 @@ export async function DELETE(id: number): Promise<NextResponse> {
   } catch (error) {
     return ApiHandler.ResponseToJson(error, 500);
   }
-
 }
 
 export async function PUT(request: Request): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
-    const placa = searchParams.get('placa');
-    const idCor = searchParams.get('id_cor');
-    const idModelo = searchParams.get('id_modelo');
+    const id = searchParams.get("id");
+    const placa = searchParams.get("placa");
+    const idCor = searchParams.get("id_cor");
+    const idModelo = searchParams.get("id_modelo");
 
     const { rows } = await sql`UPDATE carros
       SET placa = ${placa}, id_cor = ${idCor}, id_modelo = ${idModelo}
@@ -55,7 +54,7 @@ export async function PUT(request: Request): Promise<NextResponse> {
 
     return ApiHandler.ResponseToJson(rows, 200);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return ApiHandler.ResponseToJson(error, 500);
   }
 }

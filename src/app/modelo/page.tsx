@@ -1,11 +1,11 @@
 "use client";
 
-import Model from './content'
+import Models from "./content";
 import React, { useEffect, useRef, useState } from "react";
 import { ROUTES_CONST } from "@/shared/route.const";
-import {Loading} from "../../components/_ui/Button/index";
+import { Loading } from "../../components/_ui/Button/index";
 import { Toast } from "../../components/_ui/Toast/index";
-import { SnackbarCloseReason } from '@mui/material/Snackbar';
+import { SnackbarCloseReason } from "@mui/material/Snackbar";
 
 interface Model {
   id: number;
@@ -25,7 +25,7 @@ export default function ModelsAll() {
   const [loading, setLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [severity, setSeverity] = useState<'success' | 'error'>('error');
+  const [severity, setSeverity] = useState<"success" | "error">("error");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +35,7 @@ export default function ModelsAll() {
       try {
         const [modelsResponse, modelsGraficoResponse] = await Promise.all([
           fetch(ROUTES_CONST.CARRO_MODELO),
-          fetch(`${ROUTES_CONST.CARRO_MODELO}/grafico`)
+          fetch(`${ROUTES_CONST.CARRO_MODELO}/grafico`),
         ]);
 
         if (!modelsResponse.ok || !modelsGraficoResponse.ok) {
@@ -48,10 +48,10 @@ export default function ModelsAll() {
         setModels(colorData.rows);
         setModelsGrafico(colorGraficoData.rows);
         setSuccessMessage("Dados carregados com sucesso!");
-        setSeverity('success');
+        setSeverity("success");
       } catch (err) {
         setError("Falha ao carregar os dados");
-        setSeverity('error');
+        setSeverity("error");
       } finally {
         setLoading(false);
         setSnackbarOpen(true);
@@ -61,25 +61,23 @@ export default function ModelsAll() {
     fetchData();
   }, []);
 
-  const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason: SnackbarCloseReason) => {
-    if (reason === 'clickaway') {
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent | Event,
+    reason: SnackbarCloseReason,
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
     setSnackbarOpen(false);
   };
 
   if (loading) {
-    return <Loading color="#021526" size={88} />; 
+    return <Loading color="#021526" size={88} />;
   }
 
   return (
-    <>      
-      <Model
-        models={models}
-        modelsGrafico={modelsGrafico}
-        setModels={setModels}
-        setModelsGrafico={setModelsGrafico} />;
-
+    <>
+      <Models models={models} modelsGrafico={modelsGrafico} />
       <Toast
         open={snackbarOpen}
         onClose={handleCloseSnackbar}
@@ -87,5 +85,5 @@ export default function ModelsAll() {
         severity={severity}
       />
     </>
-  );  
+  );
 }

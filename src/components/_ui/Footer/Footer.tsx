@@ -14,7 +14,8 @@ export const Footer = () => {
       }}
     >
       <Typography variant="body2">
-        &copy; {new Date().getFullYear()} Seu Nome. Todos os direitos reservados.
+        &copy; {new Date().getFullYear()} Seu Nome. Todos os direitos
+        reservados.
       </Typography>
       <Typography variant="body2">
         <Link href="#" color="inherit">

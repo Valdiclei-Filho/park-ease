@@ -26,13 +26,6 @@
     "quotes": "off",
     "linebreak-style": ["error", "windows"], // Define quebras de linha como CRLF
     "@typescript-eslint/no-unused-vars": "warn",
-    "@typescript-eslint/explicit-function-return-type": [
-      "warn",
-      {
-        "allowExpressions": true,
-        "allowTypedFunctionExpressions": true
-      }
-    ],
     "require-await": "warn",
     "consistent-return": "warn",
     "react/react-in-jsx-scope": "off",

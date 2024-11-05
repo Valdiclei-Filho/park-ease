@@ -11,4 +11,3 @@ export async function GET(): Promise<NextResponse> {
     return ApiHandler.ResponseToJson(error, 500);
   }
 }
-

@@ -5,7 +5,7 @@ import Content from "./content";
 import { ROUTES_CONST } from "@/shared/route.const";
 import { Loading } from "../../components/_ui/Button/index";
 import { Toast } from "../../components/_ui/Toast/index";
-import { SnackbarCloseReason } from '@mui/material/Snackbar';
+import { SnackbarCloseReason } from "@mui/material/Snackbar";
 
 interface Car {
   id: number;
@@ -26,7 +26,7 @@ export default function CarsAll() {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [severity, setSeverity] = useState<'success' | 'error'>('error');
+  const [severity, setSeverity] = useState<"success" | "error">("error");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,10 +52,10 @@ export default function CarsAll() {
         setColors(colorData.rows);
         setModels(modelData.rows);
         setSuccessMessage("Dados carregados com sucesso!");
-        setSeverity('success');
+        setSeverity("success");
       } catch (err) {
         setError("Falha ao carregar os dados");
-        setSeverity('error');
+        setSeverity("error");
       } finally {
         setLoading(false);
         setSnackbarOpen(true);
@@ -65,23 +65,24 @@ export default function CarsAll() {
     fetchData();
   }, []);
 
-  const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason: SnackbarCloseReason) => {
-    if (reason === 'clickaway') {
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent | Event,
+    reason: SnackbarCloseReason,
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
     setSnackbarOpen(false);
   };
 
   if (loading) {
-    return (
-      <Loading color="#021526" size={88} />
-    );
+    return <Loading color="#021526" size={88} />;
   }
 
   return (
     <>
       <Content cars={cars} colors={colors} models={models} setCars={setCars} />
-      
+
       <Toast
         open={snackbarOpen}
         onClose={handleCloseSnackbar}

@@ -5,7 +5,10 @@ interface LoadingProps {
   size?: number;
 }
 
-export const Loading: React.FC<LoadingProps> = ({ color = "#1976d2", size = 88 }) => {
+export const Loading: React.FC<LoadingProps> = ({
+  color = "#1976d2",
+  size = 88,
+}) => {
   return (
     <div
       style={{

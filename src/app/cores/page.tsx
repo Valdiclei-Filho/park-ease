@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { ROUTES_CONST } from "@/shared/route.const";
 import { Loading } from "../../components/_ui/Button/index";
 import { Toast } from "../../components/_ui/Toast/index";
-import { SnackbarCloseReason } from '@mui/material/Snackbar';
-import Color from './content'
+import { SnackbarCloseReason } from "@mui/material/Snackbar";
+import Colors from "./content";
 
 interface Color {
   id: number;
@@ -25,7 +25,7 @@ export default function ColorsAll() {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [severity, setSeverity] = useState<'success' | 'error'>('error');
+  const [severity, setSeverity] = useState<"success" | "error">("error");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,9 +35,9 @@ export default function ColorsAll() {
       try {
         const [colorsResponse] = await Promise.all([fetch(ROUTES_CONST.CORES)]);
 
-        const [colorsGraficoResponse] = await Promise.all(
-          [fetch(`${ROUTES_CONST.CORES}/grafico`)]
-        )
+        const [colorsGraficoResponse] = await Promise.all([
+          fetch(`${ROUTES_CONST.CORES}/grafico`),
+        ]);
 
         if (!colorsResponse.ok) {
           throw new Error("Failed to fetch some data.");
@@ -49,10 +49,10 @@ export default function ColorsAll() {
         setColors(colorData.rows);
         setColorsGrafico(colorGraficoData.rows);
         setSuccessMessage("Dados carregados com sucesso!");
-        setSeverity('success');
+        setSeverity("success");
       } catch (err) {
         setError("Falha ao carregar os dados");
-        setSeverity('error');
+        setSeverity("error");
       } finally {
         setLoading(false);
         setSnackbarOpen(true);
@@ -62,25 +62,23 @@ export default function ColorsAll() {
     fetchData();
   }, []);
 
-  const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason: SnackbarCloseReason) => {
-    if (reason === 'clickaway') {
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent | Event,
+    reason: SnackbarCloseReason,
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
     setSnackbarOpen(false);
   };
 
   if (loading) {
-    return <Loading color="#021526" size={88} />; 
+    return <Loading color="#021526" size={88} />;
   }
 
   return (
     <>
-      <Color
-        colors={colors}
-        colorsGrafico={colorsGrafico}
-        setColors={setColors}
-        setColorsGrafico={setColorsGrafico} />;
-      
+      <Colors colors={colors} colorsGrafico={colorsGrafico} />
       <Toast
         open={snackbarOpen}
         onClose={handleCloseSnackbar}
@@ -88,6 +86,5 @@ export default function ColorsAll() {
         severity={severity}
       />
     </>
-  )
-  
+  );
 }

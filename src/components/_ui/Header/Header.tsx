@@ -18,10 +18,13 @@ import { AppUtils } from "@/shared";
 
 const pages = [
   { name: "Home", path: AppUtils.HOME_PATH },
-  { name: "Planos", path: AppUtils.PLANOS_PATH },
-  { name: "Estacionamento", path: AppUtils.CARROS_PATH },
+  { name: "Estacionamento", path: AppUtils.ESTACIONAMENTO_PATH },
+  { name: "Consulta Planos", path: AppUtils.PLANOS_PATH },
+  { name: "Consulta Clientes", path: AppUtils.CARROS_PATH },
   { name: "Consulta Cores", path: AppUtils.CORES_PATH },
   { name: "Consulta Modelos", path: AppUtils.CARROS_MODELOS_PATH },
+  { name: "Cadastro Carro", path: AppUtils.CARRO_CADASTRO_PATH },
+  { name: "Cadastro Cliente", path: AppUtils.CLIENTE_PLANO_PATH },
 ];
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];

@@ -20,7 +20,9 @@
     "@mui/x-data-grid": "^7.20.0",
     "@vercel/postgres": "^0.10.0",
     "next": "14.2.14",
+    "qrcode.react": "^4.1.0",
     "react": "^18",
+    "react-confetti": "^6.1.0",
     "react-dom": "^18",
     "react-router-dom": "^6.26.2",
     "vercel": "^32.3.0"

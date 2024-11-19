@@ -8,7 +8,7 @@
     "plugin:react/recommended",
     "eslint:recommended"
   ],
-  "plugins": ["@typescript-eslint", "react", "prettier"],
+  "plugins": ["@typescript-eslint", "react", "prettier", "cypress"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 2020,

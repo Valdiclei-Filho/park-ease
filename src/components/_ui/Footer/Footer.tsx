@@ -5,7 +5,7 @@ import { Box, Typography, Link } from "@mui/material";
 export const Footer = () => {
   return (
     <Box
-    className="footer"
+      className="footer"
       sx={{
         backgroundColor: "#021526", // Usando o tom mais escuro
         color: "#FFFFFF", // Texto branco

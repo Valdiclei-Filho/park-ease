@@ -17,7 +17,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { QRCodeCanvas } from "qrcode.react";
 import Confetti from "react-confetti";
-import { DateUtils, ROUTES_CONST } from "@/shared";
+import { DateUtils } from "@/shared";
 
 interface Cliente {
   id: number;
@@ -128,35 +128,6 @@ export default function ClientePage({ clientes }: Props) {
     setTimeout(() => {
       setPagamentoEfetuado(false);
     }, 10000);
-    handleSubmit();
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const clienteParams = new URLSearchParams(
-        Object.entries(clientes).map(([key, value]) => [key, String(value)]),
-      ).toString();
-
-      console.log(clienteParams);
-
-      const url = `${ROUTES_CONST.ESTACIONAMENTO}?${clienteParams}`;
-
-      console.log(url);
-
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`Erro: ${response.status} - ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error("Erro na requisição:", error);
-    }
   };
 
   const columns: GridColDef[] = [

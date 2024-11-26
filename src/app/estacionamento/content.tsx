@@ -17,7 +17,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { QRCodeCanvas } from "qrcode.react";
 import Confetti from "react-confetti";
-import { DateUtils } from "@/shared";
+import { DateUtils, ROUTES_CONST } from "@/shared";
 
 interface Cliente {
   id: number;
@@ -51,11 +51,15 @@ export default function ClientePage({ clientes }: Props) {
   const handleAddCliente = () => {
     const cliente = clientes.find((c) => c.id === clienteId);
     if (cliente && !estacionados.some((c) => c.id === cliente.id)) {
-      const horarioEntrada = DateUtils.GetCurrentDateAsString();
-      setEstacionados((prev) => [
-        ...prev,
-        { ...cliente, multa: 0, horario_entrada: horarioEntrada },
-      ]);
+      const horarioEntrada = DateUtils.GetCurrentDateISO();
+      const novoCliente = {
+        ...cliente,
+        multa: 0,
+        horario_entrada: horarioEntrada,
+      };
+
+      setEstacionados((prev) => [...prev, novoCliente]);
+      handleSubmitEstacionamento(novoCliente);
     }
     setClienteId(null);
   };
@@ -79,7 +83,7 @@ export default function ClientePage({ clientes }: Props) {
   }, []);
 
   const handlePagamento = (id: number) => {
-    const horarioSaida = DateUtils.GetCurrentDateAsString();
+    const horarioSaida = DateUtils.GetCurrentDateISO();
 
     setEstacionados((prev) =>
       prev.map((cliente) =>
@@ -111,7 +115,7 @@ export default function ClientePage({ clientes }: Props) {
         cliente.id === clienteId
           ? {
               ...cliente,
-              horario_saida: DateUtils.GetCurrentDateAsString(),
+              horario_saida: DateUtils.GetCurrentDateISO(),
             }
           : cliente,
       ),
@@ -128,6 +132,57 @@ export default function ClientePage({ clientes }: Props) {
     setTimeout(() => {
       setPagamentoEfetuado(false);
     }, 10000);
+  };
+
+  const handleSubmitEstacionamento = async (cliente: Cliente) => {
+    try {
+      const clienteParams = new URLSearchParams(
+        Object.entries(cliente).map(([key, value]) => [key, String(value)]),
+      ).toString();
+
+      const url = `${ROUTES_CONST.ESTACIONAMENTO}?${clienteParams}`;
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro: ${response.status} - ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Dados enviados com sucesso:", data);
+      return data;
+    } catch (error) {
+      console.error("Erro ao enviar dados para o estacionamento:", error);
+    }
+  };
+
+  const handleAtualizarPagamento = async (clienteId: number) => {
+    try {
+      const horarioSaida = DateUtils.GetCurrentDateISO();
+      const url = `${ROUTES_CONST.ESTACIONAMENTO}?id_cliente=${clienteId}&horario_saida=${horarioSaida}`;
+
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao atualizar o pagamento: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Pagamento atualizado com sucesso:", data);
+      return data;
+    } catch (error) {
+      console.error("Erro ao enviar a atualização do pagamento:", error);
+    }
   };
 
   const columns: GridColDef[] = [
@@ -166,7 +221,10 @@ export default function ClientePage({ clientes }: Props) {
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => handlePagamento(params.row.id)}
+            onClick={async () => {
+              await handleAtualizarPagamento(params.row.id);
+              handlePagamento(params.row.id);
+            }}
           >
             Pagar
           </Button>

@@ -53,6 +53,7 @@ export default function ColorsAll() {
       } catch (err) {
         setError("Falha ao carregar os dados");
         setSeverity("error");
+        console.log(err);
       } finally {
         setLoading(false);
         setSnackbarOpen(true);

@@ -14,4 +14,18 @@ export class DateUtils {
   public static GetCurrentDate(): Date {
     return new Date();
   }
+
+  public static GetCurrentDateISO() {
+    const currentDate = new Date();
+
+    const datePart = currentDate.toISOString().split("T")[0];
+
+    const hours = String(currentDate.getHours()).padStart(2, "0");
+    const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+    const seconds = String(currentDate.getSeconds()).padStart(2, "0");
+
+    const formattedDateTime = `${datePart}T${hours}:${minutes}:${seconds}`;
+
+    return formattedDateTime;
+  }
 }

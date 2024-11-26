@@ -1,4 +1,3 @@
-// components/_ui/Footer/index.js
 import React from "react";
 import { Box, Typography, Link } from "@mui/material";
 
@@ -7,15 +6,15 @@ export const Footer = () => {
     <Box
       className="footer"
       sx={{
-        backgroundColor: "#021526", // Usando o tom mais escuro
-        color: "#FFFFFF", // Texto branco
+        backgroundColor: "#021526",
+        color: "#FFFFFF",
         padding: "16px",
         textAlign: "center",
-        position: "relative", // Mantido como relative
+        position: "relative",
       }}
     >
       <Typography variant="body2">
-        &copy; {new Date().getFullYear()} Seu Nome. Todos os direitos
+        &copy; {new Date().getFullYear()} Valdiclei. Todos os direitos
         reservados.
       </Typography>
       <Typography variant="body2">

@@ -21,19 +21,24 @@ export async function GET(): Promise<NextResponse> {
 export async function POST(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
 
-  const id_cliente = searchParams.get("id_cliente");
-  const horario_entrada = searchParams.get("horario_entrada");
+  const id = searchParams.get("id");
+  const horario_entrada = decodeURIComponent(
+    searchParams.get("horario_entrada") || "",
+  ).replace("T", " ");
+
+  console.log("horario_entrada");
+  console.log(horario_entrada);
 
   const movimentacao = {
-    id_cliente,
+    id,
     horario_entrada: horario_entrada,
-    horario_saída: null,
+    horario_saída: horario_entrada,
     estacionado: true,
   };
 
   try {
     const { rows } = await sql`
-    INSERT INTO clientes_movimentacoes_veiculos (id_cliente, horario_entrada, horario_saida, estacionado) VALUES (${movimentacao.id_cliente}, ${movimentacao.horario_entrada}, ${movimentacao.horario_saída}, ${movimentacao.estacionado});`;
+    INSERT INTO clientes_movimentacoes_veiculos (id_cliente, horario_entrada, horario_saida, estacionado) VALUES (${movimentacao.id}, ${movimentacao.horario_entrada}, ${movimentacao.horario_saída}, ${movimentacao.estacionado});`;
     return ApiHandler.ResponseToJson(rows, 201);
   } catch (error) {
     return ApiHandler.ResponseToJson(error, 500);
@@ -44,7 +49,9 @@ export async function PUT(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
 
   const id_cliente = searchParams.get("id_cliente");
-  const horario_saida = searchParams.get("horario_saida");
+  const horario_saida = decodeURIComponent(
+    searchParams.get("horario_saida") || "",
+  ).replace("T", " ");
 
   const movimentacao = {
     id_cliente,
@@ -54,7 +61,17 @@ export async function PUT(request: Request): Promise<NextResponse> {
 
   try {
     const { rows } = await sql`
-    update clientes_movimentacoes_veiculos set horario_saida = ${movimentacao.horario_saida}, estacionado = ${movimentacao.estacionado} where id_cliente = ${movimentacao.id_cliente};`;
+    UPDATE clientes_movimentacoes_veiculos 
+SET 
+    horario_saida = ${movimentacao.horario_saida}, 
+    estacionado = ${movimentacao.estacionado}
+WHERE 
+    id = (
+        SELECT MAX(id) 
+        FROM clientes_movimentacoes_veiculos 
+        WHERE id_cliente = ${movimentacao.id_cliente}
+    );
+`;
     return ApiHandler.ResponseToJson(rows, 201);
   } catch (error) {
     return ApiHandler.ResponseToJson(error, 500);

@@ -1,5 +1,4 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
-import { lighten } from "@mui/system";
+import { Box, Grid, Typography } from "@mui/material";
 import { LocalOffer, AccessTime, DirectionsCar } from "@mui/icons-material"; // Ícones para melhorar a usabilidade visual
 
 const darkColors = [
@@ -24,8 +23,6 @@ const darkColors = [
   "#455A64",
   "#37474F",
 ];
-
-const getLighterColor = (color: string) => lighten(color, 0.3);
 
 interface Plan {
   id: number;
@@ -129,26 +126,6 @@ export default function Planos({ plans }: Props) {
                 <DirectionsCar sx={{ marginRight: "8px" }} />
                 <Typography variant="body2">{`Veículos: ${plano.quantidade_veiculos}`}</Typography>
               </Box>
-
-              <Button
-                variant="contained"
-                sx={{
-                  marginTop: "20px",
-                  backgroundColor: getLighterColor(
-                    darkColors[index % darkColors.length],
-                  ),
-                  color: "#fff",
-                  "&:hover": {
-                    backgroundColor: getLighterColor(
-                      darkColors[index % darkColors.length],
-                    ),
-                  },
-                  borderRadius: "20px",
-                  padding: "10px 20px",
-                }}
-              >
-                Escolher Plano
-              </Button>
             </Box>
           </Grid>
         ))}
